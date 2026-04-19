@@ -366,48 +366,89 @@ const START = new Date(2026, 3, 20);
 const RACE = new Date(today.getFullYear() + 1, 0, 17);
 
 /* ── Templates (cycle every 4 weeks; week 4 = recovery) ── */
-const TMPLS = [
-  // Week 1 – base build
-  [
+function getWeekPlan(wi) {
+  // wi 0  = Apr 20
+  // wi 1  = Apr 27
+  // wi 2  = May 4
+  // wi 3  = May 11
+  // wi 4  = May 18
+  // wi 5  = May 25
+  // wi 6  = Jun 1
+  // wi 7  = Jun 8
+  // wi 8  = Jun 15
+  // wi 9  = Jun 22
+  // wi 10 = Jun 29
+  // wi 11 = Jul 6   -- normal, sat=8
+  // wi 12 = Jul 13  -- RACE WEEK: taper
+  // wi 13 = Jul 20  -- POST-RACE RECOVERY
+  // wi 14 = Jul 27  -- resume, sat=8
+  // wi 15 = Aug 3
+
+  // Special weeks
+  if (wi === 12) {
+    // Race week Jul 13–19: taper + race day Sat
+    return [
+      '休息或力量训练',
+      '4km 区间2',
+      '30 min 骑车 区间1',
+      '3km 区间2',
+      '休息或力量训练',
+      '比赛日',
+      '休息',
+    ];
+  }
+  if (wi === 13) {
+    // Post-race recovery Jul 20–26
+    return [
+      '休息',
+      '休息',
+      '30 min 骑车 区间1',
+      '休息或力量训练',
+      '3km 区间2',
+      '休息或力量训练',
+      '4km 区间2',
+    ];
+  }
+
+  let tue, sat, thuText;
+
+  // Tuesday km
+  if (wi < 2)        tue = 4;
+  else if (wi < 6)   tue = 4;
+  else if (wi < 18)  tue = 5;
+  else if (wi < 22)  tue = 6;
+  else if (wi < 30)  tue = 7;
+  else if (wi < 34)  tue = 8;
+  else               tue = 5;
+
+  // Saturday long run km
+  if (wi < 2)        sat = 6;
+  else if (wi < 4)   sat = 7;
+  else if (wi < 6)   sat = 7;
+  else if (wi < 10)  sat = 7;
+  else if (wi < 16)  sat = 8;
+  else if (wi < 20)  sat = 9;
+  else if (wi < 30)  sat = 10;
+  else if (wi < 34)  sat = 12;
+  else if (wi < 37)  sat = 14;
+  else if (wi < 38)  sat = 10;
+  else               sat = 8;
+
+  // Thursday
+  if (wi < 4)        thuText = '4km 区间2';
+  else if (wi < 8)   thuText = '5km 区间2';
+  else               thuText = '乳酸阈值/节奏跑 2km 热身 区间1 再跑20-30 min 区间3';
+
+  return [
     '休息或力量训练',
-    '速度训练/间歇跑\n目标配速跑400m（8-12组）间歇100m慢跑或休息',
-    '30 min 慢跑\n配速能轻松聊天',
-    '乳酸阈值/节奏跑\n先慢跑2km热身 再用"舒适的吃力"感跑20-30 min',
+    tue + 'km 区间2',
+    '60 min 骑车 区间1',
+    thuText,
     '休息或力量训练',
-    '长距离\n比目标配速慢40-60s',
+    sat + 'km长距离 区间1',
     '休息或力量训练',
-  ],
-  // Week 2 – volume up
-  [
-    '休息或力量训练',
-    '速度训练/间歇跑\n目标配速跑400m（8-12组）间歇100m慢跑或休息',
-    '30 min 慢跑\n配速能轻松聊天',
-    '乳酸阈值/节奏跑\n先慢跑2km热身 再用"舒适的吃力"感跑20-30 min',
-    '休息或力量训练',
-    '长距离\n比目标配速慢40-60s',
-    '休息或力量训练',
-  ],
-  // Week 3 – peak load
-  [
-    '休息或力量训练',
-    '速度训练/间歇跑\n目标配速跑400m（10-14组）间歇100m慢跑或休息',
-    '35 min 慢跑\n配速能轻松聊天',
-    '乳酸阈值/节奏跑\n先慢跑2km热身 再用"舒适的吃力"感跑25-35 min',
-    '休息或力量训练',
-    '长距离\n比目标配速慢40-60s',
-    '休息或力量训练',
-  ],
-  // Week 4 – recovery
-  [
-    '休息或力量训练',
-    '轻松间歇跑\n目标配速跑400m（6-8组）间歇100m慢跑或休息',
-    '25 min 轻松慢跑',
-    '轻松节奏跑\n先慢跑2km热身 再用"舒适的吃力"感跑15-20 min',
-    '休息或力量训练',
-    '{L2} km 长距离\n比目标配速慢40-60s',
-    '休息或力量训练',
-  ],
-];
+  ];
+}
 
 /* ── Build all weeks ── */
 function buildPlan() {
@@ -418,7 +459,7 @@ function buildPlan() {
 
   while (d <= RACE) {
     const wend = addDays(d, 6);
-    const tpl = TMPLS[wi % 4];
+    const tpl = getWeekPlan(wi);
 
     const isRW = wend >= RACE;
 
