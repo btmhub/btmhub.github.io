@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>马拉松训练计划</title>
@@ -315,7 +313,10 @@ footer {
   .day-txt { margin-bottom: 0; flex: 1; }
 }
 </style>
-</head>
+<style class="automa-element-selector">@font-face { font-family: "Inter var"; font-weight: 100 900; font-display: swap; font-style: normal; font-named-instance: "Regular"; src: url("chrome-extension://infppggnoaenmfagbfknfkancpbljcca/Inter-roman-latin.var.woff2") format("woff2") }
+.automa-element-selector { direction: ltr } 
+ [automa-isDragging] { user-select: none } 
+ [automa-el-list] {outline: 2px dashed #6366f1;}</style></head>
 <body>
 <div class="container">
 
@@ -325,23 +326,179 @@ footer {
       <div class="progress-bg">
         <div class="progress-fill" id="pFill" style="width:0%"></div>
       </div>
-      <div class="progress-label" id="pLabel">0 / 0</div>
+      <div class="progress-label" id="pLabel">0 / 273 (0%)</div>
     </div>
   </header>
 
   <div class="month-nav">
     <button class="nav-btn" id="prevBtn" onclick="changeMonth(-1)">← 上月</button>
     <div class="month-center">
-      <div class="month-name" id="monthName"></div>
-      <div class="month-sub" id="monthSub"></div>
+      <div class="month-name" id="monthName">2027年 一月</div>
+      <div class="month-sub" id="monthSub">共 2 周 · 计划约 30 km</div>
     </div>
-    <button class="nav-btn" id="nextBtn" onclick="changeMonth(1)">下月 →</button>
+    <button class="nav-btn" id="nextBtn" onclick="changeMonth(1)" disabled="">下月 →</button>
   </div>
 
   <div style="margin-bottom:16px;text-align:right">
-    <button onclick="exportHTML()" style="font-family:var(--font);font-size:11px;padding:6px 14px;background:transparent;border:1px solid var(--border);border-radius:3px;color:var(--text-sub);cursor:pointer;" onmouseover="this.style.borderColor='var(--border-hover)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-sub)'">导出当前内容</button>
+    <button onclick="exportHTML()" style="font-family: var(--font); font-size: 11px; padding: 6px 14px; background: transparent; border-color: var(--border-hover); border-top-style: ; border-top-width: ; border-right-style: ; border-right-width: ; border-bottom-style: ; border-bottom-width: ; border-left-style: ; border-left-width: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 3px; color: var(--text); cursor: pointer;" onmouseover="this.style.borderColor='var(--border-hover)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-sub)'">导出当前内容</button>
   </div>
-  <div id="monthContainer"></div>
+  <div id="monthContainer"><div class="week-block">
+      <div class="week-hdr">
+        <span class="week-label">1/4 – 1/10</span>
+        <div class="week-right">
+          <span class="week-count">0/7</span>
+          <span class="badge">15 km</span>
+        </div>
+      </div>
+      <div class="days-grid" id="dg-0"><div class="day-col" id="col-2027-01-03">
+        <div class="day-lbl">周一 · 1/4</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-03T16:00:00.000Z">休息或力量训练</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-03T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-04">
+        <div class="day-lbl">周二 · 1/5</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-04T16:00:00.000Z">间歇跑 2km 热身 区间1 再跑200m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-04T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-05">
+        <div class="day-lbl">周三 · 1/6</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-05T16:00:00.000Z">30 min 骑车 区间1</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-05T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-06">
+        <div class="day-lbl">周四 · 1/7</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-06T16:00:00.000Z">乳酸阈值/节奏跑 2km 热身 区间1 再跑20 min 区间3</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-06T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-07">
+        <div class="day-lbl">周五 · 1/8</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-07T16:00:00.000Z">休息或力量训练</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-07T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-08">
+        <div class="day-lbl">周六 · 1/9</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-08T16:00:00.000Z">8km长距离 区间1</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-08T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-09">
+        <div class="day-lbl">周日 · 1/10</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-09T16:00:00.000Z">休息或力量训练</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-09T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div></div></div><div class="week-block">
+      <div class="week-hdr">
+        <span class="week-label">1/11 – 1/17</span>
+        <div class="week-right">
+          <span class="week-count">0/7</span>
+          <span class="badge">15 km</span>
+        </div>
+      </div>
+      <div class="days-grid" id="dg-1"><div class="day-col" id="col-2027-01-10">
+        <div class="day-lbl">周一 · 1/11</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-10T16:00:00.000Z">5km 区间2</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-10T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-11">
+        <div class="day-lbl">周二 · 1/12</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-11T16:00:00.000Z">休息或力量训练</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-11T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-12">
+        <div class="day-lbl">周三 · 1/13</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-12T16:00:00.000Z">30 min 骑车 区间1</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-12T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-13">
+        <div class="day-lbl">周四 · 1/14</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-13T16:00:00.000Z">休息或力量训练</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-13T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-14">
+        <div class="day-lbl">周五 · 1/15</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-14T16:00:00.000Z">5km 区间2</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-14T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-15">
+        <div class="day-lbl">周六 · 1/16</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-15T16:00:00.000Z">休息或力量训练</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-15T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div><div class="day-col" id="col-2027-01-16">
+        <div class="day-lbl">周日 · 1/17</div>
+        <div class="day-body">
+          <div class="day-txt" contenteditable="true" data-d="2027-01-16T16:00:00.000Z">比赛日</div>
+          <div class="btn-row">
+          <button class="mark-btn" data-d="2027-01-16T16:00:00.000Z">
+            完成
+          </button>
+          
+        </div>
+        </div></div></div></div></div>
 
   <div class="banner" id="doneBanner">
     <p>全部完成</p>
@@ -516,7 +673,12 @@ function sk(d)  { return 'tr_done_' + dateKey(d); }
 function stk(d) { return 'tr_text_' + dateKey(d); }
 function isDone(d)      { try { return localStorage.getItem(sk(d)) === '1'; } catch(e) { return false; } }
 function setDone(d, v)  { try { v ? localStorage.setItem(sk(d),'1') : localStorage.removeItem(sk(d)); } catch(e){} }
-function getSaved(d)    { try { return localStorage.getItem(stk(d)); } catch(e) { return null; } }
+const __SNAP__ = {"2026-08-05":"乳酸阈值/节奏跑 2km 热身 区间1 再跑20-30 min 区间3","2026-10-05":"间歇跑 2km 热身 区间1 再跑200m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2026-10-07":"乳酸阈值/节奏跑 2km 热身 区间1 再跑20-30 min 区间3","2026-10-09":"11km长距离 区间1","2026-10-12":"间歇跑 2km 热身 区间1 再跑200m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2026-10-16":"11km长距离 区间1","2026-10-19":"间歇跑 2km 热身 区间1 再跑300m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2026-10-23":"12km长距离 区间1","2026-10-26":"间歇跑 2km 热身 区间1 再跑300m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2026-10-30":"12km长距离 区间1","2026-11-02":"间歇跑 2km 热身 区间1 再跑400m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2026-11-06":"12km长距离 区间1","2026-11-09":"间歇跑 2km 热身 区间1 再跑400m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2026-11-13":"12km长距离 区间1","2026-11-16":"间歇跑 2km 热身 区间1 再跑400m（8-12组）跑休比1:1 慢跑或走 目标配速或区间5","2026-11-20":"13km长距离 区间1","2026-11-23":"间歇跑 2km 热身 区间1 再跑400m（8-12组）跑休比1:1 慢跑或走 目标配速或区间5","2026-11-27":"13km长距离 区间1","2026-11-30":"间歇跑 2km 热身 区间1 再跑400m（8-12组）跑休比1:1 慢跑或走 目标配速或区间5","2026-12-04":"14km长距离 区间1","2026-12-05":"休息或力量训练","2026-12-07":"间歇跑 2km 热身 区间1 再跑400m（8-12组）跑休比1:1 慢跑或走 目标配速或区间5","2026-12-11":"15km长距离 区间1","2026-12-14":"间歇跑 2km 热身 区间1 再跑400m（8-12组）跑休比1:1 慢跑或走 目标配速或区间5","2026-12-18":"15km长距离 区间1","2026-12-21":"间歇跑 2km 热身 区间1 再跑400m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2026-12-22":"40 min 骑车 区间1","2026-12-23":"乳酸阈值/节奏跑 2km 热身 区间1 再跑20 min 区间3","2026-12-25":"12km长距离 区间1","2026-12-28":"间歇跑 2km 热身 区间1 再跑300m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2026-12-29":"30 min 骑车 区间1","2026-12-30":"乳酸阈值/节奏跑 2km 热身 区间1 再跑15 min 区间3","2027-01-01":"10km长距离 区间1","2027-01-04":"间歇跑 2km 热身 区间1 再跑200m（6-10组）跑休比1:1 慢跑或走 目标配速或区间5","2027-01-05":"30 min 骑车 区间1","2027-01-06":"乳酸阈值/节奏跑 2km 热身 区间1 再跑20 min 区间3","2027-01-08":"8km长距离 区间1","2027-01-10":"5km 区间2","2027-01-11":"休息或力量训练","2027-01-12":"30 min 骑车 区间1","2027-01-13":"休息或力量训练","2027-01-14":"5km 区间2","2027-01-15":"休息或力量训练","2027-01-16":"比赛日"};
+function getSaved(d) {
+  const k = dateKey(d);
+  if (__SNAP__[k] !== undefined) return __SNAP__[k];
+  try { return localStorage.getItem(stk(d)); } catch(e) { return null; }
+}
 function saveText(d, t) { try { localStorage.setItem(stk(d), t); } catch(e){} }
 
 /* ── Progress ── */
@@ -747,5 +909,6 @@ renderMonth();
 
 })();
 </script>
-</body>
-</html>
+
+
+<div id="automa-palette"></div></body></html>
