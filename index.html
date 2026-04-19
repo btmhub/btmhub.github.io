@@ -47,7 +47,7 @@ h1 {
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -.02em;
-  color: var(--text);
+  color: var(--accent);
   margin-bottom: 6px;
 }
 
@@ -219,7 +219,7 @@ h1 {
   border-radius: 3px;
   padding: 2px 3px;
   transition: background .15s, box-shadow .15s;
-  word-break: break-all;
+  word-break: break-word; white-space: pre-wrap;
 }
 
 .day-txt.rest { color: var(--text-dim); font-style: italic; }
@@ -301,7 +301,7 @@ footer {
   font-size: 10px;
   color: var(--text-dim);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 6px;
 }
@@ -347,7 +347,6 @@ footer {
 
   <footer>
     <span>点击训练内容可直接编辑 · 进度自动保存在浏览器</span>
-    <span id="footerKm"></span>
   </footer>
 
 </div>
@@ -371,13 +370,45 @@ const RACE = new Date(today.getFullYear(), 11, 31);
 /* ── Templates (cycle every 4 weeks; week 4 = recovery) ── */
 const TMPLS = [
   // Week 1 – base build
-  ['骑车 60 min 或休息', '力量训练', '{R} km 轻松跑', '力量训练', '{R2} km + 坡跑 4×40s', '{L} km 越野慢跑', '3 km 恢复跑'],
+  [
+    '休息或力量训练',
+    '速度训练/间歇跑\n目标配速跑400m（8-12组）间歇100m慢跑或休息',
+    '30 min 慢跑\n配速能轻松聊天',
+    '乳酸阈值/节奏跑\n先慢跑2km热身 再用"舒适的吃力"感跑20-30 min',
+    '休息或力量训练',
+    '长距离\n比目标配速慢40-60s',
+    '休息或力量训练',
+  ],
   // Week 2 – volume up
-  ['休息 或 力量训练', '{R} km 跑 或 骑车 60 min', '力量训练', '{R} km 越野跑', '休息 或 力量训练', '{L} km 越野长距离', '4 km 恢复跑'],
+  [
+    '休息或力量训练',
+    '速度训练/间歇跑\n目标配速跑400m（8-12组）间歇100m慢跑或休息',
+    '30 min 慢跑\n配速能轻松聊天',
+    '乳酸阈值/节奏跑\n先慢跑2km热身 再用"舒适的吃力"感跑20-30 min',
+    '休息或力量训练',
+    '长距离\n比目标配速慢40-60s',
+    '休息或力量训练',
+  ],
   // Week 3 – peak load
-  ['休息 或 力量训练', '{R} km 跑 + 坡跑 6×40s', '力量训练', '{R2} km 越野跑', '休息 或 力量训练', '{L} km 越野长距离', '4 km 恢复跑'],
+  [
+    '休息或力量训练',
+    '速度训练/间歇跑\n目标配速跑400m（10-14组）间歇100m慢跑或休息',
+    '35 min 慢跑\n配速能轻松聊天',
+    '乳酸阈值/节奏跑\n先慢跑2km热身 再用"舒适的吃力"感跑25-35 min',
+    '休息或力量训练',
+    '长距离\n比目标配速慢40-60s',
+    '休息或力量训练',
+  ],
   // Week 4 – recovery
-  ['休息', '4 km 轻松跑 或 骑车', '力量训练', '{R} km 轻松越野', '休息', '{L2} km 越野', '3 km 恢复跑'],
+  [
+    '休息或力量训练',
+    '轻松间歇跑\n目标配速跑400m（6-8组）间歇100m慢跑或休息',
+    '25 min 轻松慢跑',
+    '轻松节奏跑\n先慢跑2km热身 再用"舒适的吃力"感跑15-20 min',
+    '休息或力量训练',
+    '{L2} km 长距离\n比目标配速慢40-60s',
+    '休息或力量训练',
+  ],
 ];
 
 /* ── Build all weeks ── */
@@ -390,10 +421,7 @@ function buildPlan() {
   while (d <= RACE) {
     const wend = addDays(d, 6);
     const tpl = TMPLS[wi % 4];
-    const r  = Math.max(3,  Math.round(wkm * 0.20));
-    const r2 = Math.max(4,  Math.round(wkm * 0.25));
-    const l  = Math.max(5,  Math.round(wkm * 0.40));
-    const l2 = Math.max(4,  Math.round(wkm * 0.28));
+
     const isRW = wend >= RACE;
 
     const days = [];
@@ -401,14 +429,10 @@ function buildPlan() {
       const dd = addDays(d, i);
       if (dd > RACE) break;
 
-      let text = tpl[i]
-        .replace(/{R2}/g, r2)
-        .replace(/{L2}/g, l2)
-        .replace(/{R}/g, r)
-        .replace(/{L}/g, l);
+      let text = tpl[i];
 
       const isRaceDay = sameDay(dd, RACE);
-      let isRest = /^休息$/.test(text.trim());
+      let isRest = false;
 
       days.push({
         date: new Date(dd),
@@ -421,16 +445,7 @@ function buildPlan() {
 
     weeks.push({ startDate: new Date(d), endDate: new Date(wend < RACE ? wend : RACE), days, weekKm: Math.round(wkm), isRaceWeek: isRW });
 
-    // Next week's volume
-    if (!isRW) {
-      if ((wi + 1) % 4 === 3) {
-        // recovery week: drop ~15%
-        wkm = Math.round(wkm * 0.85);
-      } else {
-        // build: +8% (≤10%)
-        wkm = Math.min(65, Math.round(wkm * 1.08));
-      }
-    }
+
 
     wi++;
     d = addDays(d, 7);
@@ -491,7 +506,6 @@ function renderMonth() {
 
   const totalKm = md.weeks.reduce((s, w) => s + w.weekKm, 0);
   document.getElementById('monthSub').textContent = '共 ' + md.weeks.length + ' 周 · 计划约 ' + totalKm + ' km';
-  document.getElementById('footerKm').textContent = '本月计划跑量约 ' + totalKm + ' km';
 
   const firstDate = md.weeks[0].startDate;
   const lastDate  = md.weeks[md.weeks.length - 1].endDate;
@@ -550,7 +564,7 @@ function renderMonth() {
       col.innerHTML = `
         <div class="day-lbl">${day.label} · ${(day.date.getMonth()+1)}/${day.date.getDate()}</div>
         <div class="${bodyC}">
-          <div class="${txtC}" contenteditable="${day.rest ? 'false' : 'true'}" data-d="${ds}">${savedTx}</div>
+          <div class="${txtC}" contenteditable="${day.rest ? 'false' : 'true'}" data-d="${ds}">${savedTx.replace(/\n/g, '<br>')}</div>
           ${btnH}
         </div>`;
       grid.appendChild(col);
@@ -560,7 +574,7 @@ function renderMonth() {
   // Events
   cont.querySelectorAll('[contenteditable="true"]').forEach(el => {
     el.addEventListener('blur', function () {
-      saveText(new Date(this.dataset.d), this.textContent.trim());
+      saveText(new Date(this.dataset.d), this.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').trim());
     });
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
@@ -583,6 +597,21 @@ function renderMonth() {
 
   updateProgress();
 }
+
+window.copyWeekOneToAll = function () {
+  if (!allWeeks.length) return;
+  const firstWeek = allWeeks[0];
+  // collect first week's texts (saved or default)
+  const tpl = firstWeek.days.map(day => getSaved(day.date) || day.text);
+  // apply to all other weeks
+  allWeeks.slice(1).forEach(week => {
+    week.days.forEach((day, i) => {
+      if (i < tpl.length) saveText(day.date, tpl[i]);
+    });
+  });
+  renderMonth();
+  alert('已将第一周内容复制到全部 ' + (allWeeks.length - 1) + ' 周');
+};
 
 window.changeMonth = function (dir) {
   mIdx = Math.max(0, Math.min(months.length - 1, mIdx + dir));
