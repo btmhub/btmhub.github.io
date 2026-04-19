@@ -613,6 +613,58 @@ window.copyWeekOneToAll = function () {
   alert('已将第一周内容复制到全部 ' + (allWeeks.length - 1) + ' 周');
 };
 
+window.exportHTML = function () {
+  // Collect all saved texts from localStorage into the template defaults
+  const snapshot = {};
+  allWeeks.forEach(week => {
+    week.days.forEach(day => {
+      const saved = getSaved(day.date);
+      if (saved !== null) snapshot[dateKey(day.date)] = saved;
+    });
+  });
+
+  // Serialize snapshot into the page as an inline override map
+  const snapshotJson = JSON.stringify(snapshot);
+
+  // Get current HTML and inject the snapshot before the closing script
+  let src = document.documentElement.outerHTML;
+
+  // Remove any previously injected snapshot
+  src = src.replace(/\/\* __SNAPSHOT_START__ \*\/[\s\S]*?\/\* __SNAPSHOT_END__ \*\//g, '');
+
+  // Inject snapshot loader right after (function () {
+  const inject = `/* __SNAPSHOT_START__ */
+const __SNAPSHOT__ = ${snapshotJson};
+const __origGetSaved = getSaved;
+/* __SNAPSHOT_END__ */`;
+
+  // We patch getSaved to fall back to snapshot
+  const patchedGetSaved = `
+function getSaved(d) {
+  const k = dateKey(d);
+  if (__SNAPSHOT__ && __SNAPSHOT__[k] !== undefined) return __SNAPSHOT__[k];
+  try { return localStorage.getItem(stk(d)); } catch(e) { return null; }
+}`;
+
+  // Build a self-contained HTML: replace the getSaved function definition and inject snapshot
+  src = src.replace(
+    "function getSaved(d)    { try { return localStorage.getItem(stk(d)); } catch(e) { return null; } }",
+    `const __SNAPSHOT__ = ${snapshotJson};
+function getSaved(d) {
+  const k = dateKey(d);
+  if (__SNAPSHOT__ && __SNAPSHOT__[k] !== undefined) return __SNAPSHOT__[k];
+  try { return localStorage.getItem(stk(d)); } catch(e) { return null; }
+}`
+  );
+
+  const blob = new Blob([src], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '越野跑训练计划.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
 window.changeMonth = function (dir) {
   mIdx = Math.max(0, Math.min(months.length - 1, mIdx + dir));
   renderMonth();
