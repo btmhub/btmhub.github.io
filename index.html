@@ -1,276 +1,597 @@
-
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>越野跑训练计划</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-.wrap { padding: 1rem 0; font-family: var(--font-sans), system-ui, sans-serif; }
-.eyebrow { font-size: 11px; letter-spacing: .18em; color: var(--color-text-secondary); text-transform: uppercase; margin-bottom: 6px; }
-h1.plan-title { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
-h1.plan-title span { color: var(--color-text-info); }
-.subtitle { font-size: 12px; color: var(--color-text-tertiary); }
-.progress-row { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
-.prog-bg { flex: 1; height: 3px; background: var(--color-border-tertiary); border-radius: 2px; overflow: hidden; }
-.prog-fill { height: 100%; background: var(--color-text-info); border-radius: 2px; transition: width .4s; }
-.prog-label { font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; min-width: 60px; text-align: right; }
-.month-nav { display: flex; align-items: center; justify-content: space-between; margin: 1.2rem 0 1rem; padding: 10px 14px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); }
-.nav-btn { background: none; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 5px 14px; font-size: 13px; cursor: pointer; color: var(--color-text-secondary); transition: background .15s; }
-.nav-btn:hover:not(:disabled) { background: var(--color-background-primary); color: var(--color-text-primary); }
-.nav-btn:disabled { opacity: .3; cursor: default; }
-.month-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
-.month-meta { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; text-align: center; }
-.week-block { margin-bottom: 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); overflow: hidden; }
-.week-block.complete { border-color: var(--color-border-success); }
-.week-hdr { display: flex; justify-content: space-between; align-items: center; padding: 7px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); gap: 8px; }
-.week-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --card: #1a1a1a;
+  --border: #2a2a2a;
+  --border-hover: #3e3e3e;
+  --accent: #c8f04a;
+  --accent-dim: rgba(200,240,74,0.08);
+  --accent-border: rgba(200,240,74,0.25);
+  --text: #e0e0d6;
+  --text-sub: #888880;
+  --text-dim: #444;
+  --race: #f0a84a;
+  --race-dim: rgba(240,168,74,0.07);
+  --race-border: rgba(240,168,74,0.2);
+  --success-bg: rgba(200,240,74,0.05);
+  --success-border: rgba(200,240,74,0.22);
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  padding: 40px 20px 80px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1080px; margin: 0 auto; }
+
+/* ── Header ── */
+header { margin-bottom: 40px; }
+
+h1 {
+  font-size: clamp(24px, 4vw, 40px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+
+.progress-wrap { display: flex; align-items: center; gap: 12px; }
+
+.progress-bg {
+  flex: 1; height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width .5s ease;
+}
+
+.progress-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  white-space: nowrap;
+  min-width: 64px;
+  text-align: right;
+}
+
+/* ── Month nav ── */
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 12px 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.nav-btn {
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 6px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.nav-btn:hover:not(:disabled) { border-color: var(--border-hover); color: var(--text); }
+.nav-btn:disabled { opacity: .25; cursor: default; }
+
+.month-center { text-align: center; }
+
+.month-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .01em;
+}
+
+.month-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 3px;
+  letter-spacing: .04em;
+}
+
+/* ── Week block ── */
+.week-block {
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color .25s;
+}
+
+.week-block.complete { border-color: var(--success-border); }
+
+.week-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+
+.week-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--text-sub);
+  text-transform: uppercase;
+}
+
 .week-right { display: flex; align-items: center; gap: 8px; }
-.week-cnt { font-size: 11px; color: var(--color-text-secondary); }
-.week-badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
-.week-badge.done { background: var(--color-background-success); color: var(--color-text-success); border-color: var(--color-border-success); }
-.week-badge.race { background: var(--color-background-warning); color: var(--color-text-warning); border-color: var(--color-border-warning); }
-.days-grid { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); background: var(--color-background-primary); }
-.day-col { border-right: 0.5px solid var(--color-border-tertiary); }
+
+.week-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  background: transparent;
+}
+
+.badge.done { border-color: var(--success-border); color: var(--accent); background: var(--success-bg); }
+
+/* ── Days grid ── */
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: var(--surface);
+}
+
+.day-col {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
 .day-col:last-child { border-right: none; }
-.day-lbl { font-size: 10px; color: var(--color-text-tertiary); padding: 6px 9px 4px; border-bottom: 0.5px solid var(--color-border-tertiary); }
-.day-body { padding: 9px; display: flex; flex-direction: column; gap: 7px; min-height: 105px; }
-.day-body.done-bg { background: var(--color-background-success); }
-.day-body.race-bg { background: var(--color-background-warning); }
-.day-txt { font-size: 12px; line-height: 1.55; color: var(--color-text-primary); flex: 1; border-radius: 4px; transition: background .15s; }
-.day-txt.rest { color: var(--color-text-tertiary); font-style: italic; }
-.day-txt.done-text { color: var(--color-text-secondary); text-decoration: line-through; text-decoration-color: var(--color-border-secondary); }
-.day-txt.race-text { color: var(--color-text-warning); font-weight: 500; }
+
+.day-lbl {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 8px 11px 6px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.day-body {
+  padding: 11px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 118px;
+}
+
+.day-body.done-bg { background: var(--success-bg); }
+
+.day-txt {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text);
+  flex: 1;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  padding: 2px 3px;
+  transition: background .15s, box-shadow .15s;
+  word-break: break-all;
+}
+
+.day-txt.rest { color: var(--text-dim); font-style: italic; }
+.day-txt.done-text { color: var(--text-dim); text-decoration: line-through; text-decoration-color: #3a3a3a; }
+
 [contenteditable="true"] { outline: none; cursor: text; }
-[contenteditable="true"]:hover { background: var(--color-background-secondary); }
-[contenteditable="true"]:focus { background: var(--color-background-secondary); box-shadow: 0 0 0 1.5px var(--color-border-info); }
+[contenteditable="true"]:hover { background: rgba(255,255,255,0.04); }
+[contenteditable="true"]:focus { background: rgba(255,255,255,0.06); box-shadow: 0 0 0 1.5px rgba(200,240,74,0.3); }
+
+/* ── Buttons ── */
 .btn-row { display: flex; gap: 4px; }
-.mark-btn { flex: 1; padding: 5px 0; font-size: 10px; cursor: pointer; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); transition: all .15s; }
-.mark-btn:hover:not([disabled]):not(.done-state) { border-color: var(--color-border-success); color: var(--color-text-success); background: var(--color-background-success); }
-.mark-btn.done-state { border-color: var(--color-border-success); color: var(--color-text-success); background: var(--color-background-success); }
-.undo-btn { padding: 5px 7px; font-size: 12px; cursor: pointer; border-radius: var(--border-radius-md); border: 0.5px solid transparent; background: transparent; color: var(--color-text-tertiary); transition: all .15s; }
-.undo-btn:hover { border-color: var(--color-border-secondary); color: var(--color-text-secondary); }
-.banner { display: none; margin-top: 1rem; padding: 1.25rem; border: 0.5px solid var(--color-border-success); background: var(--color-background-success); border-radius: var(--border-radius-lg); text-align: center; }
+
+.mark-btn {
+  flex: 1;
+  padding: 6px 0;
+  font-family: var(--font);
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.mark-btn:hover:not([disabled]):not(.done-state) {
+  border-color: var(--success-border);
+  color: var(--accent);
+  background: var(--success-bg);
+}
+
+.mark-btn.done-state {
+  border-color: var(--success-border);
+  color: var(--accent);
+  background: var(--success-bg);
+}
+
+.mark-btn[disabled] { opacity: .18; cursor: default; }
+
+.undo-btn {
+  padding: 6px 8px;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-dim);
+  transition: all .15s;
+}
+
+.undo-btn:hover { border-color: var(--border-hover); color: var(--text-sub); }
+
+/* ── Banner ── */
+.banner {
+  display: none;
+  margin-top: 32px;
+  padding: 24px;
+  border: 1px solid var(--success-border);
+  background: var(--success-bg);
+  border-radius: 4px;
+  text-align: center;
+}
+
 .banner.show { display: block; }
-.banner p { font-size: 11px; color: var(--color-text-success); letter-spacing: .15em; text-transform: uppercase; }
-.banner h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-top: 4px; }
-footer { margin-top: 1.2rem; padding-top: 10px; border-top: 0.5px solid var(--color-border-tertiary); font-size: 11px; color: var(--color-text-tertiary); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
-@media(max-width:600px){
-  .days-grid{grid-template-columns:1fr}
-  .day-col{border-right:none;border-bottom:0.5px solid var(--color-border-tertiary)}
-  .day-col:last-child{border-bottom:none}
-  .day-body{min-height:unset;flex-direction:row;align-items:center}
+.banner p { font-family: var(--mono); font-size: 10px; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; }
+.banner h2 { font-size: 22px; font-weight: 600; color: var(--text); margin-top: 6px; }
+
+/* ── Footer ── */
+footer {
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 680px) {
+  .days-grid { grid-template-columns: 1fr; }
+  .day-col { border-right: none; border-bottom: 1px solid var(--border); }
+  .day-col:last-child { border-bottom: none; }
+  .day-body { min-height: unset; flex-direction: row; align-items: center; gap: 10px; }
+  .day-txt { margin-bottom: 0; flex: 1; }
 }
 </style>
+</head>
+<body>
+<div class="container">
 
-<div class="wrap">
-<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">越野跑备赛训练计划，下周一至今年12月31日</h2>
+  <header>
+    <h1>越野跑训练计划</h1>
+    <div class="progress-wrap">
+      <div class="progress-bg">
+        <div class="progress-fill" id="pFill" style="width:0%"></div>
+      </div>
+      <div class="progress-label" id="pLabel">0 / 0</div>
+    </div>
+  </header>
 
-<div>
-  <div class="eyebrow">训练计划</div>
-  <h1 class="plan-title">越野跑 <span>20 km 备赛</span></h1>
-  <div class="subtitle">TRAIL RUNNING · PROGRESSIVE WEEKLY PLAN · TO DEC 31</div>
-  <div class="progress-row">
-    <div class="prog-bg"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
-    <div class="prog-label" id="pLabel">0 / 0</div>
+  <div class="month-nav">
+    <button class="nav-btn" id="prevBtn" onclick="changeMonth(-1)">← 上月</button>
+    <div class="month-center">
+      <div class="month-name" id="monthName"></div>
+      <div class="month-sub" id="monthSub"></div>
+    </div>
+    <button class="nav-btn" id="nextBtn" onclick="changeMonth(1)">下月 →</button>
   </div>
-</div>
 
-<div class="month-nav">
-  <button class="nav-btn" id="prevBtn" onclick="changeMonth(-1)">← 上月</button>
-  <div style="text-align:center">
-    <div class="month-title" id="monthTitle"></div>
-    <div class="month-meta" id="monthMeta"></div>
+  <div id="monthContainer"></div>
+
+  <div class="banner" id="doneBanner">
+    <p>全部完成</p>
+    <h2>准备好出发了！</h2>
   </div>
-  <button class="nav-btn" id="nextBtn" onclick="changeMonth(1)">下月 →</button>
+
+  <footer>
+    <span>点击训练内容可直接编辑 · 进度自动保存在浏览器</span>
+    <span id="footerKm"></span>
+  </footer>
+
 </div>
-
-<div id="monthContainer"></div>
-
-<div class="banner" id="doneBanner">
-  <p>全部完成</p>
-  <h2>准备好出发了！</h2>
-</div>
-
-<footer>
-  <span>点击训练内容可直接编辑 · 进度自动保存在浏览器</span>
-  <span id="footerKm"></span>
-</footer>
-</div>
-
 <script>
-(function(){
+(function () {
 
-const today = new Date();
-today.setHours(0,0,0,0);
+/* ── Date helpers ── */
+function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+function sameDay(a, b) { return a.toDateString() === b.toDateString(); }
+function dateKey(d) { return d.toISOString().slice(0, 10); }
+
+/* ── Start: next Monday ── */
+const today = new Date(); today.setHours(0, 0, 0, 0);
 const dow = today.getDay();
-const daysToMon = dow === 0 ? 1 : (8 - dow);
-const START = new Date(today);
-START.setDate(START.getDate() + daysToMon);
+const toMon = dow === 0 ? 1 : (8 - dow);
+const START = addDays(today, toMon);
 
+/* ── End: Dec 31 this year ── */
 const RACE = new Date(today.getFullYear(), 11, 31);
 
-function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
-
-const WD = ['一','二','三','四','五','六','日'];
-const MN = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-
+/* ── Templates (cycle every 4 weeks; week 4 = recovery) ── */
 const TMPLS = [
-  ['骑车 60 min 或休息','力量训练','{R} km 轻松跑','力量训练','{R2} km + 坡跑 4×40s','{L} km 越野慢跑','3 km 恢复跑'],
-  ['休息 或 力量训练','{R} km 跑 或 骑车 60 min','力量训练','{R} km 越野跑','休息 或 力量训练','{L} km 越野长距离','4 km 恢复跑'],
-  ['休息 或 力量训练','{R} km 跑 + 坡跑 6×40s','力量训练','{R2} km 越野跑','休息 或 力量训练','{L} km 越野长距离','4 km 恢复跑'],
-  ['休息 或 力量训练','{R} km 骑车 60 min','力量训练','{R} km 越野跑','休息 或 力量训练','{L} km 越野长距离','4 km 恢复跑'],
+  // Week 1 – base build
+  ['骑车 60 min 或休息', '力量训练', '{R} km 轻松跑', '力量训练', '{R2} km + 坡跑 4×40s', '{L} km 越野慢跑', '3 km 恢复跑'],
+  // Week 2 – volume up
+  ['休息 或 力量训练', '{R} km 跑 或 骑车 60 min', '力量训练', '{R} km 越野跑', '休息 或 力量训练', '{L} km 越野长距离', '4 km 恢复跑'],
+  // Week 3 – peak load
+  ['休息 或 力量训练', '{R} km 跑 + 坡跑 6×40s', '力量训练', '{R2} km 越野跑', '休息 或 力量训练', '{L} km 越野长距离', '4 km 恢复跑'],
+  // Week 4 – recovery
+  ['休息', '4 km 轻松跑 或 骑车', '力量训练', '{R} km 轻松越野', '休息', '{L2} km 越野', '3 km 恢复跑'],
 ];
 
-function buildPlan(){
+/* ── Build all weeks ── */
+function buildPlan() {
   const weeks = [];
   let d = new Date(START);
-  let wkm = 15;
+  let wkm = 15;   // starting weekly km
   let wi = 0;
-  while(d <= RACE){
-    const wend = addDays(d,6);
-    const tpl = TMPLS[wi%4];
-    const r = Math.max(3, Math.round(wkm*0.2));
-    const r2 = Math.max(4, Math.round(wkm*0.25));
-    const l = Math.max(5, Math.round(wkm*0.4));
+
+  while (d <= RACE) {
+    const wend = addDays(d, 6);
+    const tpl = TMPLS[wi % 4];
+    const r  = Math.max(3,  Math.round(wkm * 0.20));
+    const r2 = Math.max(4,  Math.round(wkm * 0.25));
+    const l  = Math.max(5,  Math.round(wkm * 0.40));
+    const l2 = Math.max(4,  Math.round(wkm * 0.28));
     const isRW = wend >= RACE;
+
     const days = [];
-    for(let i=0;i<7;i++){
-      const dd = addDays(d,i);
-      if(dd > RACE) break;
-      let text = tpl[i].replace(/{R2}/g,r2).replace(/{R}/g,r).replace(/{L}/g,l);
-      const isRaceDay = dd.toDateString()===RACE.toDateString();
-      const isRest = /^休息$/.test(text.trim());
-      if(isRW){
-        if(isRaceDay){ text='比赛日 20 km'; }
-        else if(i===1){ text='6 km 轻松跑'; }
-        else if(i===2){ text='4 km 慢跑'; }
-        else if(i===4){ text='3 km 激活跑'; }
-        else if(!isRaceDay){ text='休息'; }
+    for (let i = 0; i < 7; i++) {
+      const dd = addDays(d, i);
+      if (dd > RACE) break;
+
+      let text = tpl[i]
+        .replace(/{R2}/g, r2)
+        .replace(/{L2}/g, l2)
+        .replace(/{R}/g, r)
+        .replace(/{L}/g, l);
+
+      const isRaceDay = sameDay(dd, RACE);
+      let isRest = /^休息$/.test(text.trim());
+
+      days.push({
+        date: new Date(dd),
+        label: '周' + ['一','二','三','四','五','六','日'][i],
+        text,
+        rest: isRest,
+        race: false,
+      });
+    }
+
+    weeks.push({ startDate: new Date(d), endDate: new Date(wend < RACE ? wend : RACE), days, weekKm: Math.round(wkm), isRaceWeek: isRW });
+
+    // Next week's volume
+    if (!isRW) {
+      if ((wi + 1) % 4 === 3) {
+        // recovery week: drop ~15%
+        wkm = Math.round(wkm * 0.85);
+      } else {
+        // build: +8% (≤10%)
+        wkm = Math.min(65, Math.round(wkm * 1.08));
       }
-      days.push({ date:new Date(dd), label:'周'+WD[i], text, rest:/^休息$/.test(text.trim()), race:isRaceDay });
     }
-    weeks.push({ startDate:new Date(d), days, weekKm:Math.round(wkm), isRaceWeek:isRW });
-    if(!isRW){
-      if((wi+1)%4===3) wkm=Math.round(wkm*0.85);
-      else wkm=Math.min(60, Math.round(wkm*1.08));
-    }
+
     wi++;
-    d=addDays(d,7);
+    d = addDays(d, 7);
   }
   return weeks;
 }
 
 const allWeeks = buildPlan();
 
+/* ── Group by month ── */
 const months = [];
-let cur = null;
-allWeeks.forEach(w=>{
-  const key = w.startDate.getFullYear()+'-'+w.startDate.getMonth();
-  if(!cur||cur.key!==key){
-    cur={key, month:w.startDate.getMonth(), year:w.startDate.getFullYear(), weeks:[]};
-    months.push(cur);
+let curMon = null;
+allWeeks.forEach(w => {
+  const key = w.startDate.getFullYear() + '-' + w.startDate.getMonth();
+  if (!curMon || curMon.key !== key) {
+    curMon = { key, month: w.startDate.getMonth(), year: w.startDate.getFullYear(), weeks: [] };
+    months.push(curMon);
   }
-  cur.weeks.push(w);
+  curMon.weeks.push(w);
 });
 
 let mIdx = 0;
 
-function sk(date){ return 'tr20_'+date.toISOString().slice(0,10); }
-function tk(date){ return 'tr20t_'+date.toISOString().slice(0,10); }
-function isDone(d){ try{ return localStorage.getItem(sk(d))==='1'; }catch(e){ return false; } }
-function setDone(d,v){ try{ v?localStorage.setItem(sk(d),'1'):localStorage.removeItem(sk(d)); }catch(e){} }
-function getText(d){ try{ return localStorage.getItem(tk(d)); }catch(e){ return null; } }
-function saveText(d,t){ try{ localStorage.setItem(tk(d),t); }catch(e){} }
+/* ── Storage ── */
+function sk(d)  { return 'tr_done_' + dateKey(d); }
+function stk(d) { return 'tr_text_' + dateKey(d); }
+function isDone(d)      { try { return localStorage.getItem(sk(d)) === '1'; } catch(e) { return false; } }
+function setDone(d, v)  { try { v ? localStorage.setItem(sk(d),'1') : localStorage.removeItem(sk(d)); } catch(e){} }
+function getSaved(d)    { try { return localStorage.getItem(stk(d)); } catch(e) { return null; } }
+function saveText(d, t) { try { localStorage.setItem(stk(d), t); } catch(e){} }
 
-function countAll(){
-  let total=0,done=0;
-  allWeeks.forEach(w=>w.days.forEach(d=>{ if(!d.rest){total++;if(isDone(d.date))done++;} }));
-  return {total,done};
+/* ── Progress ── */
+function countAll() {
+  let total = 0, done = 0;
+  allWeeks.forEach(w => w.days.forEach(day => {
+    if (!day.rest) { total++; if (isDone(day.date)) done++; }
+  }));
+  return { total, done };
 }
 
-function updateProgress(){
-  const {total,done}=countAll();
-  const pct=total?Math.round(done/total*100):0;
-  document.getElementById('pFill').style.width=pct+'%';
-  document.getElementById('pLabel').textContent=done+' / '+total;
-  const b=document.getElementById('doneBanner');
-  done===total&&total>0?b.classList.add('show'):b.classList.remove('show');
+function updateProgress() {
+  const { total, done } = countAll();
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = done + ' / ' + total + ' (' + pct + '%)';
+  const b = document.getElementById('doneBanner');
+  done === total && total > 0 ? b.classList.add('show') : b.classList.remove('show');
 }
 
-function renderMonth(){
-  const md=months[mIdx];
-  document.getElementById('monthTitle').textContent=md.year+'年 '+MN[md.month];
-  document.getElementById('prevBtn').disabled=mIdx===0;
-  document.getElementById('nextBtn').disabled=mIdx===months.length-1;
+const MON = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
 
-  const totalKm=md.weeks.reduce((s,w)=>s+w.weekKm,0);
-  document.getElementById('monthMeta').textContent='共 '+md.weeks.length+' 周 · 计划约 '+totalKm+' km';
-  document.getElementById('footerKm').textContent='本月计划跑量约 '+totalKm+' km';
+/* ── Render month ── */
+function renderMonth() {
+  const md = months[mIdx];
+  document.getElementById('monthName').textContent = md.year + '年 ' + MON[md.month];
+  document.getElementById('prevBtn').disabled = mIdx === 0;
+  document.getElementById('nextBtn').disabled = mIdx === months.length - 1;
 
-  const cont=document.getElementById('monthContainer');
-  cont.innerHTML='';
+  const totalKm = md.weeks.reduce((s, w) => s + w.weekKm, 0);
+  document.getElementById('monthSub').textContent = '共 ' + md.weeks.length + ' 周 · 计划约 ' + totalKm + ' km';
+  document.getElementById('footerKm').textContent = '本月计划跑量约 ' + totalKm + ' km';
 
-  md.weeks.forEach((week,wi)=>{
-    const wDone=week.days.filter(d=>!d.rest&&isDone(d.date)).length;
-    const wTotal=week.days.filter(d=>!d.rest).length;
-    const allDone=wDone===wTotal;
-    const fmt=d=>(d.getMonth()+1)+'/'+(d.getDate());
-    const de=week.days[week.days.length-1].date;
+  const firstDate = md.weeks[0].startDate;
+  const lastDate  = md.weeks[md.weeks.length - 1].endDate;
+  const fmt = d => (d.getMonth()+1) + '/' + d.getDate();
 
-    const badge=week.isRaceWeek?'<span class="week-badge race">比赛周</span>'
-      :allDone?'<span class="week-badge done">✓ 完成</span>'
-      :'<span class="week-badge">'+week.weekKm+' km</span>';
+  const cont = document.getElementById('monthContainer');
+  cont.innerHTML = '';
 
-    const wEl=document.createElement('div');
-    wEl.className='week-block'+(allDone?' complete':'');
-    wEl.innerHTML=`<div class="week-hdr">
-      <span class="week-name">${fmt(week.startDate)} – ${fmt(de)}</span>
-      <div class="week-right"><span class="week-cnt">${wDone}/${wTotal}</span>${badge}</div>
-    </div><div class="days-grid" id="g${wi}"></div>`;
+  md.weeks.forEach((week, wi) => {
+    const wDone  = week.days.filter(d => !d.rest && isDone(d.date)).length;
+    const wTotal = week.days.filter(d => !d.rest).length;
+    const allDone = wDone === wTotal && wTotal > 0;
+    const fmt2 = d => (d.getMonth()+1) + '/' + d.getDate();
+
+    const badgeHtml = allDone
+      ? '<span class="badge done">✓ 完成</span>'
+      : '<span class="badge">' + week.weekKm + ' km</span>';
+
+    const wEl = document.createElement('div');
+    wEl.className = 'week-block' + (allDone ? ' complete' : '');
+    wEl.innerHTML = `
+      <div class="week-hdr">
+        <span class="week-label">${fmt2(week.startDate)} – ${fmt2(week.endDate)}</span>
+        <div class="week-right">
+          <span class="week-count">${wDone}/${wTotal}</span>
+          ${badgeHtml}
+        </div>
+      </div>
+      <div class="days-grid" id="dg-${wi}"></div>`;
     cont.appendChild(wEl);
 
-    const grid=wEl.querySelector('#g'+wi);
-    week.days.forEach(day=>{
-      const done=!day.rest&&isDone(day.date);
-      const savedTxt=getText(day.date)||day.text;
-      const col=document.createElement('div');
-      col.className='day-col';
-      col.id='c'+day.date.toISOString().slice(0,10);
+    const grid = wEl.querySelector('#dg-' + wi);
+    week.days.forEach(day => {
+      const done    = !day.rest && isDone(day.date);
+      const savedTx = getSaved(day.date) || day.text;
+      const col     = document.createElement('div');
+      col.className = 'day-col';
+      col.id = 'col-' + dateKey(day.date);
 
-      let bodyC='day-body'+(done?' done-bg':day.race?' race-bg':'');
-      let txtC='day-txt'+(day.rest?' rest':done?' done-text':day.race?' race-text':'');
+      const bodyC = 'day-body' + (done ? ' done-bg' : '');
+      const txtC  = 'day-txt'  + (day.rest ? ' rest' : done ? ' done-text' : '');
+      const ds    = day.date.toISOString();
 
-      const dateStr=day.date.toISOString();
-      let btnH='';
-      if(day.rest){
-        btnH='<button class="mark-btn" style="opacity:.25;cursor:default" disabled>休息</button>';
+      let btnH = '';
+      if (day.rest) {
+        btnH = '<button class="mark-btn" disabled>休息</button>';
       } else {
-        btnH=`<div class="btn-row">
-          <button class="mark-btn${done?' done-state':''}" data-d="${dateStr}">${done?'已完成':'完成'}</button>
-          ${done?`<button class="undo-btn" data-d="${dateStr}">↩</button>`:''}
+        btnH = `<div class="btn-row">
+          <button class="mark-btn${done ? ' done-state' : ''}" data-d="${ds}">
+            ${done ? '✓ 已完成' : '完成'}
+          </button>
+          ${done ? `<button class="undo-btn" data-d="${ds}" title="取消完成">↩</button>` : ''}
         </div>`;
       }
 
-      col.innerHTML=`<div class="day-lbl">${day.label} · ${(day.date.getMonth()+1)}/${day.date.getDate()}</div>
+      col.innerHTML = `
+        <div class="day-lbl">${day.label} · ${(day.date.getMonth()+1)}/${day.date.getDate()}</div>
         <div class="${bodyC}">
-          <div class="${txtC}" contenteditable="${day.rest?'false':'true'}" data-d="${dateStr}">${savedTxt}</div>
+          <div class="${txtC}" contenteditable="${day.rest ? 'false' : 'true'}" data-d="${ds}">${savedTx}</div>
           ${btnH}
         </div>`;
       grid.appendChild(col);
     });
   });
 
-  cont.querySelectorAll('[contenteditable="true"]').forEach(el=>{
-    el.addEventListener('blur',function(){ saveText(new Date(this.dataset.d), this.textContent.trim()); });
-    el.addEventListener('keydown',function(e){ if(e.key==='Enter'){e.preventDefault();this.blur();} });
+  // Events
+  cont.querySelectorAll('[contenteditable="true"]').forEach(el => {
+    el.addEventListener('blur', function () {
+      saveText(new Date(this.dataset.d), this.textContent.trim());
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+    });
   });
-  cont.querySelectorAll('.mark-btn:not([disabled])').forEach(btn=>{
-    btn.addEventListener('click',function(){ setDone(new Date(this.dataset.d),true); renderMonth(); updateProgress(); });
+
+  cont.querySelectorAll('.mark-btn:not([disabled])').forEach(btn => {
+    btn.addEventListener('click', function () {
+      setDone(new Date(this.dataset.d), true);
+      renderMonth(); updateProgress();
+    });
   });
-  cont.querySelectorAll('.undo-btn').forEach(btn=>{
-    btn.addEventListener('click',function(){ setDone(new Date(this.dataset.d),false); renderMonth(); updateProgress(); });
+
+  cont.querySelectorAll('.undo-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      setDone(new Date(this.dataset.d), false);
+      renderMonth(); updateProgress();
+    });
   });
 
   updateProgress();
 }
 
-window.changeMonth=function(dir){ mIdx=Math.max(0,Math.min(months.length-1,mIdx+dir)); renderMonth(); };
+window.changeMonth = function (dir) {
+  mIdx = Math.max(0, Math.min(months.length - 1, mIdx + dir));
+  renderMonth();
+};
+
 renderMonth();
+
 })();
 </script>
+</body>
+</html>
