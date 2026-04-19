@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>越野跑训练计划</title>
+<title>马拉松训练计划</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -320,7 +320,7 @@ footer {
 <div class="container">
 
   <header>
-    <h1>越野跑训练计划</h1>
+    <h1>马拉松训练计划</h1>
     <div class="progress-wrap">
       <div class="progress-bg">
         <div class="progress-fill" id="pFill" style="width:0%"></div>
@@ -342,7 +342,7 @@ footer {
 
   <div class="banner" id="doneBanner">
     <p>全部完成</p>
-    <h2>准备好出发了！</h2>
+    <h2>准备好出发了！加油冲线！</h2>
   </div>
 
   <footer>
@@ -358,14 +358,12 @@ function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); retu
 function sameDay(a, b) { return a.toDateString() === b.toDateString(); }
 function dateKey(d) { return d.toISOString().slice(0, 10); }
 
-/* ── Start: next Monday ── */
+/* ── Start: Apr 20 2026 ── */
 const today = new Date(); today.setHours(0, 0, 0, 0);
-const dow = today.getDay();
-const toMon = dow === 0 ? 1 : (8 - dow);
-const START = addDays(today, toMon);
+const START = new Date(2026, 3, 20);
 
-/* ── End: Dec 31 this year ── */
-const RACE = new Date(today.getFullYear(), 11, 31);
+/* ── End: Jan 17 next year ── */
+const RACE = new Date(today.getFullYear() + 1, 0, 17);
 
 /* ── Templates (cycle every 4 weeks; week 4 = recovery) ── */
 const TMPLS = [
