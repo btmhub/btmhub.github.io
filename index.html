@@ -1,12 +1,13 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-.wrap{background:#0d0d0d;padding:40px 20px;border-radius:6px}
+body,html{background:#0d0d0d}
+.wrap{background:#0d0d0d;padding:40px 20px;min-height:100vh}
 .grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid #2a2a2a;border-radius:6px;overflow:hidden;max-width:1100px;margin:0 auto}
 .col{border-right:1px solid #2a2a2a}
 .col:last-child{border-right:none}
-.hdr{padding:10px 12px;font-size:12px;color:#666;background:#1a1a1a;border-bottom:1px solid #2a2a2a}
-.body{padding:16px 12px;font-size:15px;font-weight:500;color:#e0e0d6;min-height:100px;outline:none;cursor:text;white-space:pre-wrap;word-break:break-word}
+.hdr{padding:10px 12px;font-size:12px;color:#666;background:#1a1a1a;border-bottom:1px solid #2a2a2a;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
+.body{padding:16px 12px;font-size:15px;font-weight:500;color:#e0e0d6;min-height:100px;outline:none;cursor:text;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
 .body:hover{background:#161616}
 .body:focus{background:#161616;box-shadow:inset 0 0 0 1px #3a3a3a}
 .tip{font-size:11px;color:#444;text-align:center;margin-top:10px;opacity:0;transition:opacity 0.4s;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
@@ -20,7 +21,7 @@
 </style>
 
 <div class="wrap">
-  <div class="grid" id="grid">
+  <div class="grid">
     <div class="col"><div class="hdr">周一</div><div class="body" contenteditable="true" data-day="mon"></div></div>
     <div class="col"><div class="hdr">周二</div><div class="body" contenteditable="true" data-day="tue"></div></div>
     <div class="col"><div class="hdr">周三</div><div class="body" contenteditable="true" data-day="wed"></div></div>
@@ -52,4 +53,7 @@ document.querySelectorAll('[data-day]').forEach(el=>{
   el.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(save,600);});
   el.addEventListener('blur',save);
 });
+
+document.documentElement.style.background='#0d0d0d';
+document.body.style.background='#0d0d0d';
 </script>
