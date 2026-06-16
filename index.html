@@ -34,17 +34,7 @@ body,html{background:#0d0d0d}
 </div>
 
 <script>
-const defaults={mon:'上身训练',tue:'下身训练',wed:'间歇跑
-  快于目标配速
-  400米快 100米慢
-    12组',thu:'有氧跑或骑车
-      156-169bpm
-        30-40分钟',fri:'乳酸阈值跑
-          热身2公里
-            169-174bpm
-              20-30分钟',sat:'下身训练',sun:'长距离
-                比目标配速慢40-60秒
-                  16-18公里'};
+const defaults={mon:'上身训练',tue:'下身训练',wed:'间歇跑 快于目标配速 400米快 100米慢 12组',thu:'有氧跑或骑车 156-169bpm 30-40分钟',fri:'乳酸阈值跑 热身2公里 169-174bpm 20-30分钟',sat:'下身训练',sun:'长距离 比目标配速慢40-60秒 16-18公里'};
 const KEY='weekly_training_v1';
 let t;
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch{return {};}}
